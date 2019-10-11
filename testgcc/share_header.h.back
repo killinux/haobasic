@@ -1,0 +1,2 @@
+int add(int i);
+int use_add(int l);
