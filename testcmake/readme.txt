@@ -24,3 +24,6 @@ ldd libtestuseadd.so
 #########
 gcc 编译过程：预处理 编译 汇编 连接
 https://www.cnblogs.com/wjchao/p/7460375.html
+
+连接的顺序，gcc是从右往左，cmake是从下往上， 
+最基础的库在最右或者最下

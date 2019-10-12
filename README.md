@@ -2,7 +2,7 @@
 总结下：
 
 1.系统里的定义了htonll
-2.thrift-0.8.9定义了zk里定义了htonll
+2.thrift-0.8.0定义了zk里定义了htonll
 3.zk里定义了htonll
 4.cthrift里面先#undefine htonll ，然后引入zk的 htonll
 
@@ -14,3 +14,4 @@
 
 在加一层保险：
 gcc -o output.bin -Xlinker "-(" liba.ar libb.ar -Xlinker "-)" -lrt
+-Xlinker 括起来的这部分会循环查找
