@@ -6,8 +6,12 @@ yum install graphviz
 
 
 gcc -g -finstrument-functions test.c  my_debug.c -o test
+output:test
 ./test
+output:trace.txt
 pvtrace test
+output:graph.dot
 dot -Tjpg graph.dot -o graph.jpg
+output:graph.jpg
 
 #scp root@118.25.212.122:/opt/mt/haobasic/graphviz/graph.jpg .
