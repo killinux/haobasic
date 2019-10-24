@@ -23,6 +23,13 @@ output:trace.txt
 jsontrace test
 output:graph.json
 
+then
+
+git clone https://github.com/killinux/vizceral-example
+cp graph.json vizceral-example/src/sample_data.json
+
+run this example:
+npm run dev
 
 #scp root@118.25.212.122:/opt/mt/haobasic/graphviz/graph.jpg .
 
