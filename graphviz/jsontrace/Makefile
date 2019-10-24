@@ -6,14 +6,14 @@ CC = gcc
 
 OBJS = trace.o symbols.o stack.o
 
-pvtrace: $(OBJS)
+jsontrace: $(OBJS)
 	gcc -o $@ $(OBJS)
 
 .c.o:
 	$(CC) $(CFLAGS) -Wall -c $<
 
-install: pvtrace
-	cp pvtrace /usr/local/bin
+install: jsontrace
+	cp jsontrace /usr/local/bin
 
 clean:
-	rm -f pvtrace *.o
+	rm -f jsontrace *.o

@@ -1,2 +1,2 @@
 #!/bin/sh
-rm -f test.map trace.txt test graph.dot graph.jpg
+rm -f test.map trace.txt test graph.dot graph.jpg graph.json
