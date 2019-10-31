@@ -33,3 +33,6 @@ npm run dev
 
 #scp root@118.25.212.122:/opt/mt/haobasic/graphviz/graph.jpg .
 
+c++ is a problem ,may be segmentfault with init
+see:
+https://stackoverflow.com/questions/12233416/using-gccs-function-instrumentation-why-does-using-c-stl-containers-or-strea
