@@ -45,7 +45,9 @@ int translateFunctionFromSymbol( unsigned int address, char *func )
   FILE *p;
   char line[100];
   int len,  i;
-  sprintf( line, "addr2line -e %s -f -s 0x%x", imageName, address );
+  //modify by hao
+  //sprintf( line, "addr2line -e %s -f -s 0x%x", imageName, address );
+  sprintf( line, "addr2line -e %s -f -s 0x%x | c++filt ", imageName, address );
   p = popen( line, "r" );
   if (p == NULL) return 0;
   else {

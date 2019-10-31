@@ -36,3 +36,13 @@ npm run dev
 c++ is a problem ,may be segmentfault with init
 see:
 https://stackoverflow.com/questions/12233416/using-gccs-function-instrumentation-why-does-using-c-stl-containers-or-strea
+
+
+这里有个区别
+对于addr2line 
+c的时候直接会把地址转成函数
+
+c++的时候还要 c++filt 转一次
+
+
+

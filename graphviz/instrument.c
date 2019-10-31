@@ -43,18 +43,14 @@ void main_deconstructor( void )
 
 void __cyg_profile_func_enter( void *this_fn, void *call_site )
 {
-if (!initialization_complete) return;
-    /* fprintf(fp, "E %p %p\n", (int *)this_fn, (int *)call_site); */
-//    fprintf(fp, "%p %p\n", (int *)this_fn, (int *)call_site);
-   fprintf(fp, "E%p\n", (void *)this_fn); 
+    if (!initialization_complete) return;
+    fprintf(fp, "E%p\n", (void *)this_fn); 
 }
 
 
 void __cyg_profile_func_exit( void *this_fn, void *call_site )
 {
     if (!initialization_complete) return;
-    /* fprintf(fp, "X %p %p\n", (int *)this_fn, (int *)call_site); */
-//    fprintf(fp, "X %p %p\n", (int *)this_fn, (int *)call_site); 
     fprintf(fp, "X%p\n", (int *)this_fn);        
 }
 
