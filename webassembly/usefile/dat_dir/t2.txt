@@ -1,0 +1,4 @@
+this is t2
+this is a txt file
+hello t2.txt
+end

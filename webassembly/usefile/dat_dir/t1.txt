@@ -1,0 +1,4 @@
+this is t1
+this is a txt file
+hello packdir
+end

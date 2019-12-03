@@ -1,0 +1,35 @@
+<html>
+<head>
+<meta charset="UTF-8">
+  <script>
+    const importObj = {
+        env: {
+            memory: new WebAssembly.Memory({initial: 256, maximum: 256}),
+            __memory_base: 0,
+            tableBase: 0,
+            table: new WebAssembly.Table({initial: 10, element: 'anyfunc'}),
+            abort:function(){}
+        }
+    };
+ 
+ 
+  fetch('./debug.wasm').then(response =>
+    response.arrayBuffer()
+  ).then(bytes => WebAssembly.instantiate(bytes,importObj)).then(results => {
+    instance = results.instance;
+    var sumOfSquare= instance.exports._sumOfSquare;  
+ 
+     var button = document.getElementById('run');
+     button.addEventListener('click', function() {
+          var input1 = 3;
+          var input2 = 4;
+          alert('sumOfSquare('+input1+','+input2+')='+sumOfSquare(input1,input2));
+     }, false);
+  });
+ 
+  </script>
+</head>
+<body>
+  <input type="button" id="run" value="click"/>
+</body>
+</html>
