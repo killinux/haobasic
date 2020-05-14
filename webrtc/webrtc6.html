@@ -1,0 +1,150 @@
+<html>
+<head></head>
+<body>
+this connection is :<span id="conn"></span>
+<div id="conn_show">
+  <a  id="conn_link" href="#">call me</a> 
+</div></br>
+<textarea id="dataChannelSend" >please change me</textarea>
+<script>
+		window.onload = function () {//dont use jquery
+			console.log("onload---->");
+			var el = document.getElementById('dataChannelSend');
+			el.addEventListener('input',function () {
+				console.log("input");
+				sendData();
+      	  	});
+			el.addEventListener('propertychange',function () {//兼容IE
+				console.log("property");	
+				sendData();
+      		});
+		}		
+		function getQueryVariable(variable)
+		{
+		       var query = window.location.search.substring(1);
+		       var vars = query.split("&");
+		       for (var i=0;i<vars.length;i++) {
+		               var pair = vars[i].split("=");
+		               if(pair[0] == variable){return pair[1];}
+		       }
+		       return(false);
+		}
+		var this_conn = parseInt(Math.random() * 10);
+		console.log("connnnnn:"+this_conn);
+		console.log("getQueryVariable:"+getQueryVariable('c'));
+        var isCaller =getQueryVariable("c");
+        var socket = new WebSocket("ws://127.0.0.1:3000");
+		var myrole = "callee";
+		if(isCaller){//第一个链接显示可以拨打我，第二个链接显示我在拨打
+			myrole = "caller";
+			this_conn=isCaller;
+			document.getElementById("conn_show").innerText="I am a caller";
+		}else{
+			document.getElementById("conn_link").href="http://localhost:3000?c="+this_conn;
+	        document.getElementById("conn_link").target="_blank";
+		}
+		document.getElementById("conn").innerText=this_conn;
+		socket.onopen = function(){ // modify by hao 2020.05.12
+			console.log("websocket opening --->");
+			socket.send(JSON.stringify({
+                        //"name":"123",
+                        "name":this_conn,
+                        "role":myrole,
+                        "event": "connect",//add by hao
+                        "data": {}
+            }));
+		    if(isCaller){
+        	    console.log("------->createOffer");
+        	    pc.createOffer(function(desc){
+        	    	//  console.log(desc);
+        	        pc.setLocalDescription(desc);
+        	        console.log("---------------->pc.setLocal");
+        	        socket.send(JSON.stringify({
+						"name":this_conn,
+						"role":myrole,
+        	            "event": "_offer",
+        	            "data": {
+        	                "sdp": desc
+        	            }
+        	        }));
+        	    }, function (error) {
+        	        console.log('Failure callback: ' + error);
+        	    });
+        	}else{
+			}			
+		}
+        socket.onmessage = function(event){
+            var json = JSON.parse(event.data);
+            //console.log('onmessage: ', json);
+            //如果是一个ICE的候选，则将其加入到PeerConnection中，否则设定对方的session描述为传递过来的描述
+            if( json.event === "_ice_candidate" ){
+                pc.addIceCandidate(new RTCIceCandidate(json.data.candidate));
+            } else {
+                pc.setRemoteDescription(new RTCSessionDescription(json.data.sdp));
+                console.log("---------------->pc.setRemote");
+                // 如果是一个offer，那么需要回复一个answer
+                if(json.event === "_offer") {
+                	console.log("------->createAnswer");
+                    pc.createAnswer(function(desc){
+			            pc.setLocalDescription(desc);
+			            console.log("---------------->pc.setLocal");
+			            socket.send(JSON.stringify({ 
+//							"name":"123",
+							"name":this_conn,
+							"role":myrole,
+			                "event": "_answer",
+			                "data": {
+			                    "sdp": desc
+			                }
+			            }));
+			        }, function (error) {
+                        console.log('Failure callback: ' + error);
+                    });
+                }else{
+                	console.log("------->receive Answer---('"+json.event+"')");
+                }
+                
+            }
+        };
+        var iceServer = null;
+        var pc = new webkitRTCPeerConnection(iceServer,{optional: [{RtpDataChannels: true}]});
+        try {
+		    sendChannel = pc.createDataChannel('sendDataChannel',{reliable: true});
+		} catch (e) {
+		    alert('createDataChannel() failed with exception: ' + e.message);
+		}
+		sendChannel.onopen = console.log('--Send channel open state is : ' +sendChannel.readyState);
+  		sendChannel.onclose = console.log('--Send channel close  state is: ' +sendChannel.readyState);
+        // 发送ICE候选到其他客户端
+        pc.onicecandidate = function(event){
+        	console.log("onicecandidate----------->");
+            if (event.candidate !== null) {
+            	console.log("event.candidate   !=   null");
+                socket.send(JSON.stringify({
+				//	"name":"123",
+					"name":this_conn,
+					"role":myrole,
+                    "event": "_ice_candidate",
+                    "data": {
+                        "candidate": event.candidate
+                    }
+                }));
+            }else{
+            	console.log("event.candidate   == null");
+            }
+        };
+    	sendChannel.onmessage = function(event) {
+    		  console.log("-sendChannel.onmessage--★★★★★");
+   			  document.getElementById('dataChannelSend').value = event.data;
+		};
+//		pc.ondatachannel = function(event) {
+//            console.log("-ondatachannel--★★★★★---ondatachannel");
+//      };
+        function sendData() {
+		  var data = document.getElementById('dataChannelSend').value;
+		  console.log("---->>>>sendData():"+data);
+		  sendChannel.send(data);
+		}
+    </script>
+</body>
+</html>
