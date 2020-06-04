@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>test wasm</title>
+    </head>
+    <body>
+        <input type="number" id="left" value="0">
+        <input type="number" id="right" value="0">
+        <br/>
+        <button id="add" name="button">calc</button>
+
+        <script type="text/javascript">
+            var Module = {};
+            fetch('add.wasm').then(response => response.arrayBuffer())
+            .then((bytes) => {
+                Module.wasmBinary = bytes;
+                var script = document.createElement('script');
+                script.src = "add.js";
+                document.body.appendChild(script);
+            });
+
+            document.getElementById('add').addEventListener('click', () => {
+                var leftValue = document.getElementById('left').value;
+                var rightValue = document.getElementById('right').value;
+                var result = Module.ccall('add', 'number', ['number', 'number'], [leftValue, rightValue]);
+                alert(result);
+            })
+        </script>
+    </body>
+</html>

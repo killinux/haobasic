@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>我的wasm学习</title>
+</head>
+<body>
+<script>
+//初始化Module全局对象，由Emscripten工具链自动完成内容填充
+    var Module = {};
+    fetch("dependent.wasm").then(
+        response => response.arrayBuffer()
+    ).then((bytes) => {
+//填充模板数据
+        Module.wasmBinary = bytes;
+//动态异步的载入由Emscripten生成的“胶水”脚本文件
+        var script = document.createElement('script');
+        script.src = "dependent.js";
+        document.body.appendChild(script);
+    })
+</script>
+</body>
+</html>
